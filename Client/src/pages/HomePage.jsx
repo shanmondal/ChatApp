@@ -3,7 +3,7 @@ import ChatBox from '../components/ChatBox';
 
 import RightSideBar from '../components/RightSideBar';
 import { chatContext } from '../../context/chatContext';
-import SideBar from '../components/SIdeBar';
+import SideBar from './SideBar';
 const HomePage = () => {
   const { selectedUser, setSelectedUser } = useContext(chatContext);
   return (
