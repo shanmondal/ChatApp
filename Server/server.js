@@ -6,69 +6,52 @@ import { connectDB } from './lib/DB.js';
 import userRouter from './routes/userRoutes.js';
 import messageRouter from './routes/messageRoute.js';
 import { Server } from 'socket.io';
-import Message from './Models/message.js'; // ⭐ NEW: import model to update seen/delivered
+import Message from './Models/message.js';
 
-// Create Express app and HTTP server
 const app = express();
 const server = http.createServer(app);
 
 // Socket.io setup
 export const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: process.env.CORS_ORIGIN || '*',
     methods: ['GET', 'POST', 'PUT'],
   },
 });
 
-// store all online connected users
-export const userSocketMap = {}; // {userId: socketId}
+export const userSocketMap = {};
 
-// socket connection handler
+// Socket connection handler
 io.on('connection', (socket) => {
   const userId = socket.handshake.query.userId;
-  console.log(
-    'socket connected - handshake.query:',
-    socket.handshake.query,
-    'handshake.auth:',
-    socket.handshake.auth,
-  );
+  console.log('✅ user connected:', userId, 'socketId:', socket.id);
 
   if (userId) {
     userSocketMap[userId] = socket.id;
-    socket.userId = userId; // ⭐ NEW: keep userId on socket for later use
+    socket.userId = userId;
   }
-  console.log('✅ user connected:', userId, 'socketId:', socket.id);
 
-  // emit list of online users
   io.emit('getOnlineUsers', Object.keys(userSocketMap));
-  // User starts typing
+
   socket.on('typing', ({ to }) => {
-    console.log('✍️ typing FROM', userId, 'TO', to);
     const receiverSocketId = userSocketMap[to];
-    if (receiverSocketId) {
+    if (receiverSocketId)
       io.to(receiverSocketId).emit('typing', { from: userId });
-    }
   });
 
-  // User stops typing
   socket.on('stopTyping', ({ to }) => {
-    console.log('🛑 stopTyping FROM', userId, 'TO', to);
     const receiverSocketId = userSocketMap[to];
-    if (receiverSocketId) {
+    if (receiverSocketId)
       io.to(receiverSocketId).emit('stopTyping', { from: userId });
-    }
   });
 
-  // ⭐ NEW: handle markAsSeen
   socket.on('markAsSeen', async ({ from }) => {
     try {
-      // mark all unseen messages from `from` → me as seen
       await Message.updateMany(
         { senderId: from, receiverId: socket.userId, seen: false },
         { $set: { seen: true } },
       );
 
-      // get updated ids
       const seenMessages = await Message.find({
         senderId: from,
         receiverId: socket.userId,
@@ -76,8 +59,6 @@ io.on('connection', (socket) => {
       }).select('_id');
 
       const messageIds = seenMessages.map((m) => m._id.toString());
-
-      // notify sender in real time
       const senderSocketId = userSocketMap[from];
       if (senderSocketId) {
         io.to(senderSocketId).emit('messagesSeen', {
@@ -90,7 +71,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // ⭐ NEW: optional messageDelivered event
   socket.on('messageDelivered', ({ messageId, to }) => {
     const receiverSocketId = userSocketMap[to];
     if (receiverSocketId) {
@@ -98,28 +78,32 @@ io.on('connection', (socket) => {
     }
   });
 
-  // disconnect handler
   socket.on('disconnect', () => {
-    console.log('user disconnected with userId:', userId);
+    console.log('user disconnected:', userId);
     delete userSocketMap[userId];
     io.emit('getOnlineUsers', Object.keys(userSocketMap));
   });
 });
 
-// Middleware setup
+// Middleware
 app.use(express.json({ limit: '4mb' }));
-app.use(cors());
+app.use(cors({ origin: process.env.CORS_ORIGIN || '*', credentials: true }));
 app.use('/api/status', (req, res) => res.send('Server is live'));
-
-// Routes setup
 app.use('/api/auth', userRouter);
 app.use('/api/messages', messageRouter);
 
-// connect MDB
-await connectDB();
-if (NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 5000;
-  server.listen(PORT, () => console.log('Server is running on PORT: ' + PORT));
+// Start server properly
+async function start() {
+  try {
+    await connectDB();
+    const PORT = process.env.PORT || 5000;
+    server.listen(PORT, () => console.log('🚀 Server running on PORT', PORT));
+  } catch (err) {
+    console.error('Failed to start server:', err.message);
+    process.exit(1);
+  }
 }
+
+start();
 
 export default server;
