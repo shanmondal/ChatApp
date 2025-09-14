@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import User from '../Models/user.js';
+import User from '../Models/User.js';
 import cloudinary from '../lib/cloudinary.js';
 // Middleware to protect routes
 export const protectRoute = async (req, res, next) => {
