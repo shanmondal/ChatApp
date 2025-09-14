@@ -3,6 +3,7 @@ import { imagesDummyData } from '../assets/assets';
 import { chatContext } from '../../context/chatContext';
 import { AuthContext } from '../../context/authContext';
 import { useEffect } from 'react';
+import assets from '../assets/assets';
 const RightSideBar = () => {
   const { selectedUser, messages, toTitleCase } = useContext(chatContext);
   const { logout, onlineUsers } = useContext(AuthContext);
