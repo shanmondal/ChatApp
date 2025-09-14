@@ -1,8 +1,9 @@
 import React, { useContext, useState } from 'react';
 import ChatBox from '../components/ChatBox';
-import SideBar from '../components/SIdeBar';
+
 import RightSideBar from '../components/RightSideBar';
 import { chatContext } from '../../context/chatContext';
+import SideBar from '../components/SideBar';
 const HomePage = () => {
   const { selectedUser, setSelectedUser } = useContext(chatContext);
   return (
