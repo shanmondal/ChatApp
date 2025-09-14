@@ -6,7 +6,7 @@ import { formatDateLabel, formatTimeShort } from '../lib/utils.js';
 import { chatContext } from '../../context/chatContext';
 import { AuthContext } from '../../context/authContext';
 import toast from 'react-hot-toast';
-// ChatBox.js
+
 import avatar_icon from '../assets/avatar_icon.png';
 import arrow_icon from '../assets/arrow_icon.png';
 import help_icon from '../assets/help_icon.png';
