@@ -1,7 +1,7 @@
 //Get all users except the logged in user
 import cloudinary from '../lib/cloudinary.js';
 import Message from '../Models/message.js';
-import User from '../Models/user.js';
+import User from '../Models/User.js';
 import { io, userSocketMap } from '../server.js';
 
 export const getUsersForSideMenu = async (req, res) => {
