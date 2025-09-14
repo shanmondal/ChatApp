@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Picker from 'emoji-picker-react';
 
-import { messagesDummyData } from '../assets/assets';
 import { useRef } from 'react';
 import { formatDateLabel, formatTimeShort } from '../lib/utils.js';
 import { chatContext } from '../../context/chatContext';
