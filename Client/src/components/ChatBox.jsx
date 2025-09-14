@@ -1,12 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Picker from 'emoji-picker-react';
-import assets from '../assets/assets';
+
 import { messagesDummyData } from '../assets/assets';
 import { useRef } from 'react';
 import { formatDateLabel, formatTimeShort } from '../lib/utils.js';
 import { chatContext } from '../../context/chatContext';
 import { AuthContext } from '../../context/authContext';
 import toast from 'react-hot-toast';
+// ChatBox.js
+import avatar_icon from '../assets/avatar_icon.png';
+import arrow_icon from '../assets/arrow_icon.png';
+import help_icon from '../assets/help_icon.png';
+import gallery_icon from '../assets/gallery_icon.svg';
+import send_button from '../assets/send_button.svg';
+import logo_icon from '../assets/logo_icon.svg';
+
 const ChatBox = () => {
   const {
     getMessages,
@@ -183,7 +191,7 @@ const ChatBox = () => {
       <div className="h-[100%] border  overflow-scroll overflow-x-hidden relative backdrop-blur-lg  justify-between">
         <div className="flex  absolute left-[-16px] w-full items-center gap-3 py-3 px-4 mx-4 border-b border-stone-500 backdrop-blur-lg  rounded-lg">
           <img
-            src={selectedUser.profilePic || assets.avatar_icon}
+            src={selectedUser.profilePic || avatar_icon}
             alt=""
             className="w-10 rounded-full"
           />
@@ -207,15 +215,11 @@ const ChatBox = () => {
 
           <img
             onClick={() => setSelectedUser(null)}
-            src={assets.arrow_icon}
+            src={arrow_icon}
             alt=""
             className="md:hidden max-w-7 cursor-pointer "
           />
-          <img
-            src={assets.help_icon}
-            alt=""
-            className="max-md:hidden max-w-5"
-          />
+          <img src={help_icon} alt="" className="max-md:hidden max-w-5" />
         </div>
         {/** Chat messages will go here */}
         <div
@@ -244,7 +248,7 @@ pb-6"
                     {/* avatar (left for receiver) */}
                     {!isSender && (
                       <img
-                        src={selectedUser?.profilePic || assets.avatar_icon}
+                        src={selectedUser?.profilePic || avatar_icon}
                         alt=""
                         className="w-8 h-8 rounded-full"
                       />
@@ -292,7 +296,7 @@ pb-6"
                     {/* avatar (right for sender) */}
                     {isSender && (
                       <img
-                        src={authUser?.profilePic || assets.avatar_icon}
+                        src={authUser?.profilePic || avatar_icon}
                         alt=""
                         className="w-8 h-8 rounded-full"
                       />
@@ -384,7 +388,7 @@ pb-6"
             />
             <label htmlFor="image">
               <img
-                src={assets.gallery_icon}
+                src={gallery_icon}
                 alt=""
                 className="w-5 mr-2
 cursor-pointer"
@@ -393,7 +397,7 @@ cursor-pointer"
           </div>
           <img
             onClick={handleSendMessage}
-            src={assets.send_button}
+            src={send_button}
             alt=""
             className="w-7 cursor-pointer"
           />
@@ -405,7 +409,7 @@ cursor-pointer"
       className="flex flex-col items-center justify-center gap-2 text-gray-500
 bg-white/10 max-md:hidden"
     >
-      <img src={assets.logo_icon} className="max-w-16" alt="" />
+      <img src={logo_icon} className="max-w-16" alt="" />
       <p className="text-lg font-medium text-white">Chat anytime, anywhere</p>
     </div>
   );
