@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/authContext';
 import { chatContext } from '../../context/chatContext';
 import assets from '../assets/assets';
-const SideBar = () => {
+const SIdeBar = () => {
   const {
     getUsers,
     users,
@@ -107,4 +107,4 @@ rounded cursor-pointer max-sm: text-sm ${
   );
 };
 
-export default SideBar;
+export default SIdeBar;
